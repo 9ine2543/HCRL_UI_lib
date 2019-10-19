@@ -98,7 +98,6 @@
   
   #if defined(ESP32)
 
-    #include "gitTagVersion.h"
     #include <Arduino.h>
     #include <Wire.h>
     #include <SPI.h>
