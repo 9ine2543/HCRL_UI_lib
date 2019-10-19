@@ -1,10 +1,13 @@
 #include <Arduino.h>
-#include <M5Stack.h>
+#include "UI.h"
 
+UI ui;
 
 void setup() {
   // put your setup code here, to run once:
-  M5.begin();
+  ui.begin();
+  
+  ui.Lcd.fillScreen(PINK);
 }
 
 void loop() {

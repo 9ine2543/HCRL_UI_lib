@@ -64,4 +64,3 @@ void UI::writeData(int index,int data){
     
 }
 
-UI ui;

@@ -139,10 +139,7 @@
           Vector<int> dataIn;
           Vector<float> dataOut;
     };
-    
-    extern UI ui;
-    #define Ui ui
-    #define lcd Lcd
+
   #else
     #error “This library only supports boards with ESP32 processor.”
   #endif
