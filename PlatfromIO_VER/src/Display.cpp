@@ -7,8 +7,8 @@ Display::Display() : TFT_eSPI() {}
 void Display::begin() {
   TFT_eSPI::begin();
   setRotation(1);
-  fillScreen(0);
-
+  fillScreen(WHITE);
+  
   // Init the back-light LED PWM
   ledcSetup(BLK_PWM_CHANNEL, 44100, 8);
   ledcAttachPin(TFT_BL, BLK_PWM_CHANNEL);

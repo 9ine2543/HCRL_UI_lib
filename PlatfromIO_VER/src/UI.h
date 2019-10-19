@@ -105,6 +105,7 @@
     #include "SD.h"
 
     #include "Display.h"
+    #include "Node.h"
     #include "Vector.h"
     #include "utility/Config.h"
     #include "utility/Button.h"
@@ -118,7 +119,7 @@
         void update();
         void setBrightness(uint8_t brightness);
         int getData(int index);
-        void addNode(String Label,byte index,byte icon,byte mode);
+        void addNode(String Label,byte icon,byte mode);
         void writeData(int index,int data);
 
         // Button API
@@ -131,10 +132,14 @@
         // LCD
         Display Lcd = Display();
 
+        Node node = Node();
+
         
         
       private:
           bool isInited;
+          byte index = 1;
+          Vector<Node> n;
           Vector<int> dataIn;
           Vector<float> dataOut;
     };

@@ -1,5 +1,3 @@
-// Copyright (c) M5Stack. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "UI.h"
 
@@ -45,6 +43,9 @@ void UI::update() {
   BtnA.read();
   BtnB.read();
   BtnC.read();
+  
+  node.update();
+  // n[0].update();
 
 }
 
@@ -56,8 +57,9 @@ int UI::getData(int index){
     return dataIn[index];
 }
 
-void UI::addNode(String Label,byte index,byte icon,byte mode){
-    
+void UI::addNode(String Label,byte icon,byte mode){
+    node.add(Label,1,icon,mode);
+    // n.PushBack(node); 
 }
 
 void UI::writeData(int index,int data){
