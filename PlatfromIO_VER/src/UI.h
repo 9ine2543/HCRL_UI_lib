@@ -2,37 +2,6 @@
 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 /**
- * \par Copyright (C), 2016-2017, M5Stack
- * \class M5Stack
- * \brief   M5Stack library.
- * @file    M5Stack.h
- * @author  M5Stack
- * @version V0.2.4
- * @date    2018/10/29
- * @brief   Header for M5Stack.cpp module
- *
- * \par Description
- * This file is a drive for M5Stack core.
- *
- * \par Method List:
- *
- *  System:
-        M5.begin();
-        M5.update();
-
-    Power:
-        M5.Power.setPowerBoostKeepOn()
-        M5.Power.setCharge(uint8_t mode);
-        M5.Power.setPowerBoostKeepOn(bool en);
-        M5.Power.isChargeFull();
-        M5.Power.setWakeupButton(uint8_t button);
-        M5.Power.powerOFF();
-
-        bool setPowerBoostOnOff(bool en);
-        bool setPowerBoostSet(bool en);
-        bool setPowerVin(bool en);
-        bool setPowerWLEDSet(bool en);
-
     LCD:
         M5.lcd.setBrightness(uint8_t brightness);
         M5.Lcd.drawPixel(int16_t x, int16_t y, uint16_t color);
@@ -74,22 +43,6 @@
         M5.BtnA/B/C.pressedFor(uint32_t ms);
         M5.BtnA/B/C.releasedFor(uint32_t ms);
         M5.BtnA/B/C.lastChange();
-
-    Speaker:
-        M5.Speaker.tone(uint32_t freq);
-        M5.Speaker.tone(freq, time);
-        M5.Speaker.beep();
-        M5.Speaker.setBeep(uint16_t frequency, uint16_t duration);
-        M5.Speaker.mute();
-
- *
- * \par History:
- * <pre>
- * `<Author>`         `<Time>`        `<Version>`        `<Descr>`
- * Zibin Zheng         2017/07/14        0.0.1          Rebuild the new.
- * Bin                 2018/10/29        0.2.4          Add Button API
- * </pre>
- *
  */
 // #define ESP32
 
@@ -116,7 +69,7 @@
       public:
         UI();
         void begin(bool LCDEnable = true, bool SDEnable = true, bool SerialEnable = true);
-        void update();
+        void update(bool isConnected);
         void setBrightness(uint8_t brightness);
         int getData(int index);
         void addNode(String Label,byte icon,byte mode);
@@ -132,18 +85,18 @@
         // LCD
         Display Lcd = Display();
 
-        Node node = Node();
+        Vector<Node> n;
+        
 
-        
-        
       private:
           bool isInited;
-          byte index = 1;
-          Vector<Node> n;
           Vector<int> dataIn;
           Vector<float> dataOut;
+          byte index = 0;
+          byte icheck = 0;
+          
+		  bool last_status;
     };
-
   #else
     #error “This library only supports boards with ESP32 processor.”
   #endif

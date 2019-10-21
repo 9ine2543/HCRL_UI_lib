@@ -237,8 +237,6 @@ public:
         head = size - 1;
     }
 
-private:
-
     void ReAllocate(unsigned int size)
     {
         // Just in case we're re-allocating less room than we had before, make sure that we don't overrun the buffer by trying to write more elements than
@@ -264,7 +262,10 @@ private:
         storage = _storage;
         head = _head;
     }
+
+private:
+
+    
 };
 
 #endif // VECTOR_H
-

@@ -7,12 +7,23 @@ Display::Display() : TFT_eSPI() {}
 void Display::begin() {
   TFT_eSPI::begin();
   setRotation(1);
-  fillScreen(WHITE);
-  
+  fillScreen(0);
+
   // Init the back-light LED PWM
   ledcSetup(BLK_PWM_CHANNEL, 44100, 8);
   ledcAttachPin(TFT_BL, BLK_PWM_CHANNEL);
   ledcWrite(BLK_PWM_CHANNEL, 80);
+
+  ////////////////////////////////////////////////////
+  drawLine(106, 0, 106, 222, ILI9341_WHITE);
+  drawLine(214, 0, 214, 222, ILI9341_WHITE);
+  drawLine(0, 110, 319, 110, ILI9341_WHITE);
+  drawLine(0, 222, 319, 222, ILI9341_WHITE);
+  setCursor(200, 224);
+  setTextSize(2);
+  setTextColor(0xd4d63d);
+  print("<  >  SEL");
+
 }
 
 void Display::sleep() {
