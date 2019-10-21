@@ -6,7 +6,7 @@ void setup(void)
 {
 	Ui.begin();
 	Ui.setBrightness(100);
-	for(int i = 0 ;i<6;i++){
+	for(int i = 0 ;i<5;i++){
 		Ui.addNode("NINE",0,0);
 	}
 		
