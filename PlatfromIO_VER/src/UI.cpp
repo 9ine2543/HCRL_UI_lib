@@ -70,35 +70,39 @@ void UI::update(bool isConnected) {
   for(int i = 0;i<this->index;i++){
     if( i % 6 < 3){
       if(i == icheck){
+        Lcd.setTextColor(PINK);
         if(n[i].data == 0)
-          Lcd.setTextColor(PINK);
+          Lcd.fillCircle(106*i+52,60,20,WHITE);
         else if(n[i].data == 1)
-          Lcd.setTextColor(YELLOW);
+          Lcd.fillCircle(106*i+52,60,20,YELLOW);
       }
       else{
+        Lcd.setTextColor(WHITE);
         if(n[i].data == 0)
-          Lcd.setTextColor(WHITE);
+          Lcd.fillCircle(106*i+52,60,20,WHITE);
         else if(n[i].data == 1)
-          Lcd.setTextColor(YELLOW);
+          Lcd.fillCircle(106*i+52,60,20,YELLOW);
       }
-      Lcd.setCursor(106*i+5,25);
+      Lcd.setCursor(106*i+5,8);
       Lcd.print(n[i].label);
     }
     else{
       if(i == icheck){
-        // if(n[i].data == 0)
-        //   Lcd.setTextColor(PINK);
-        // else if(n[i].data == 1)
-        //   Lcd.setTextColor(YELLOW);
-        // Lcd.setTextColor(PINK);        
+        Lcd.setTextColor(PINK);
+        if(n[i].data == 0)
+          Lcd.fillCircle(106*(i-3)+52,170,20,WHITE);
+        else if(n[i].data == 1)
+          Lcd.fillCircle(106*(i-3)+52,170,20,YELLOW);
       }
       else{
+        Lcd.setTextColor(WHITE);
         if(n[i].data == 0)
-          Lcd.setTextColor(WHITE);
+          Lcd.fillCircle(106*(i-3)+52,170,20,WHITE);
         else if(n[i].data == 1)
-          Lcd.setTextColor(YELLOW);
+          Lcd.fillCircle(106*(i-3)+52,170,20,YELLOW);
       }
       Lcd.setCursor(106*(i-3)+5,120);
+      
       Lcd.print(n[i].label);
     }
     
@@ -113,11 +117,22 @@ void UI::update(bool isConnected) {
       n[icheck].data = 0;
     }
   }
-  else if(BtnA.wasPressed() && icheck > 0){
-    this->icheck--;
+  else if(BtnA.wasPressed() ){
+    if(icheck > 0)
+      this->icheck--;
+    else
+    {
+        this->icheck = this->index - 1;
+    }
+    
   }
-  else if(BtnB.wasPressed() && icheck < 5){
-    this->icheck++;
+  else if(BtnB.wasPressed()){
+    if(icheck < this->index-1)
+      this->icheck++;
+    else
+    {
+        this->icheck = 0;
+    }
   }
 }
 
