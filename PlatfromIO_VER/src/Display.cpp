@@ -5,9 +5,26 @@
 Display::Display() : TFT_eSPI() {}
 
 void Display::begin() {
+	this->bgColor = 0;
+	TFT_eSPI::begin();
+	setRotation(1);
+	fillScreen(0);
+
+	// Init the back-light LED PWM
+	ledcSetup(BLK_PWM_CHANNEL, 44100, 8);
+	ledcAttachPin(TFT_BL, BLK_PWM_CHANNEL);
+	ledcWrite(BLK_PWM_CHANNEL, 80);
+
+	////////////////////////////////////////////////////
+	drawGridUi();
+
+}
+
+void Display::begin(uint16_t bgColor) {
+  this->bgColor = bgColor;
   TFT_eSPI::begin();
   setRotation(1);
-  fillScreen(0);
+  fillScreen(bgColor);
 
   // Init the back-light LED PWM
   ledcSetup(BLK_PWM_CHANNEL, 44100, 8);
@@ -15,15 +32,29 @@ void Display::begin() {
   ledcWrite(BLK_PWM_CHANNEL, 80);
 
   ////////////////////////////////////////////////////
-  drawLine(106, 0, 106, 222, ILI9341_WHITE);
-  drawLine(214, 0, 214, 222, ILI9341_WHITE);
-  drawLine(0, 110, 319, 110, ILI9341_WHITE);
-  drawLine(0, 222, 319, 222, ILI9341_WHITE);
-  setCursor(200, 224);
-  setTextSize(2);
-  setTextColor(0xd4d63d);
-  print("<  >  SEL");
+  drawGridUi();
 
+}
+
+void Display::drawGridUi(int index) {
+	drawLine(106, 0, 106, 222, ILI9341_WHITE - bgColor);
+	drawLine(213, 0, 213, 222, ILI9341_WHITE - bgColor);
+	drawLine(0, 110, 319, 110, ILI9341_WHITE - bgColor);
+	drawLine(0, 221, 319, 221, ILI9341_WHITE - bgColor);
+	drawLine(0, 222, 319, 222, ILI9341_WHITE - bgColor);
+	if (index != last_index) {
+		setCursor(190, 224);
+		setTextSize(2);
+		setTextColor(bgColor);
+		if (last_index < 10) printf("< 0%d > SEL", last_index);
+		else printf("< %d > SEL", last_index);
+		this->last_index = index;
+	}
+	setCursor(190, 224);
+	setTextSize(2);
+	setTextColor(bgColor + 0x7777);
+	if(index < 10) printf("< 0%d > SEL",index);
+	else printf("< %d > SEL", index);
 }
 
 void Display::sleep() {

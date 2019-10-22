@@ -35,5 +35,19 @@
 
   // UART
   #define USE_SERIAL Serial
+  
+  //
+
 
 #endif /* SETTINGS_C */
+
+  #define INPT 0
+  #define OUPT 1
+  
+  #define BOX_WIDTH 106
+  #define BOX_HEIGHT 110
+  
+  #define MAX_LABEL 100
+  #define SIZE2PX 16
+  #define SIZE3PX 24
+  

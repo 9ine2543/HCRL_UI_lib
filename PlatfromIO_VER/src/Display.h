@@ -19,6 +19,8 @@
     public:
       Display();
       void begin();
+	  void begin(uint16_t bgColor);
+	  void drawGridUi(int index = 0);
       void sleep();
       void wakeup();
       void setBrightness(uint8_t brightness);
@@ -93,5 +95,7 @@
                     double scale = 1.0, uint8_t alphaThreshold = 127);
 
     private:
+		uint16_t bgColor = 0;
+		int last_index;
   };
 #endif

@@ -8,9 +8,9 @@
 UI::UI() : isInited(0) {
 }
 
-void UI::begin(bool LCDEnable, bool SDEnable, bool SerialEnable) {
+void UI::begin(uint16_t bgColor, bool LCDEnable, bool SDEnable, bool SerialEnable) {
 
-  this->n.ReAllocate(18);
+  this->n.ReAllocate(19);
 
   // Correct init once
   if (isInited == true) {
@@ -29,7 +29,8 @@ void UI::begin(bool LCDEnable, bool SDEnable, bool SerialEnable) {
 
   // LCD INIT
   if (LCDEnable == true) {
-    Lcd.begin();
+    Lcd.begin(bgColor);
+	this->backgroundColor = bgColor;
   }
 
   // TF Card
@@ -51,59 +52,20 @@ void UI::update(bool isConnected) {
   BtnC.read();
   //Display
   if (isConnected != last_status) {
-	  Lcd.setCursor(16, 224);
-	  Lcd.setTextSize(2);
-	  Lcd.fillRect(16, 224, 160, 16, ILI9341_BLACK);
-	  Lcd.setCursor(16, 224);
-	  if (isConnected) {
-		  Lcd.setTextColor(ILI9341_GREEN);
-		  Lcd.print("Connected");
-	  }
-	  else {
-		  Lcd.setTextColor(ILI9341_RED);
-		  Lcd.print("Not Connected");
-	  }
+	  Lcd.fillRect(16, 224, 160, 16, backgroundColor);
 	  last_status = isConnected;
   }
-  
-  //Node
-  for(int i = 0;i<this->index;i++){
-    if( i % 6 < 3){
-      if(i == icheck){
-        if(n[i].data == 0)
-          Lcd.setTextColor(PINK);
-        else if(n[i].data == 1)
-          Lcd.setTextColor(YELLOW);
-      }
-      else{
-        if(n[i].data == 0)
-          Lcd.setTextColor(WHITE);
-        else if(n[i].data == 1)
-          Lcd.setTextColor(YELLOW);
-      }
-      Lcd.setCursor(106*i+5,25);
-      Lcd.print(n[i].label);
-    }
-    else{
-      if(i == icheck){
-        // if(n[i].data == 0)
-        //   Lcd.setTextColor(PINK);
-        // else if(n[i].data == 1)
-        //   Lcd.setTextColor(YELLOW);
-        // Lcd.setTextColor(PINK);        
-      }
-      else{
-        if(n[i].data == 0)
-          Lcd.setTextColor(WHITE);
-        else if(n[i].data == 1)
-          Lcd.setTextColor(YELLOW);
-      }
-      Lcd.setCursor(106*(i-3)+5,120);
-      Lcd.print(n[i].label);
-    }
-    
+  Lcd.setTextSize(2);
+  Lcd.setCursor(16, 224);
+  if (isConnected) {
+	  Lcd.setTextColor(GREEN);
+	  Lcd.print("Connected");
   }
-
+  else {
+	  Lcd.setTextColor(RED);
+	  Lcd.print("Not Connected");
+  }
+  
   if(BtnC.wasPressed()){
     
     if(n[icheck].data == 0 ){
@@ -113,12 +75,106 @@ void UI::update(bool isConnected) {
       n[icheck].data = 0;
     }
   }
-  else if(BtnA.wasPressed() && icheck > 0){
-    this->icheck--;
+  else if(BtnA.wasPressed()){
+	  do{
+			if (this->icheck - 1 < 0) {
+				this->icheck = this->index-1;
+			}
+			else {
+				this->icheck--;
+			}
+	  } while (n[this->icheck].mode == OUPT);
   }
-  else if(BtnB.wasPressed() && icheck < 5){
-    this->icheck++;
+  else if(BtnB.wasPressed()){
+	  do{
+			if (this->icheck + 1 > this->index-1) {
+				this->icheck = 0;
+			}
+			else {
+				this->icheck++;
+			}
+	  } while (n[this->icheck].mode == OUPT);
   }
+
+  //Node
+  //Compute the Pages
+  int currentPage = icheck / 6; // 0 1 2
+  int start = currentPage * 6; // 0 6 12
+  int totalPage;
+  if (index > 12) totalPage = 3;
+  else if (index > 6) totalPage = 2;
+  else totalPage = 1;
+  int end;
+  if (currentPage + 1 == totalPage) {
+	  if (index != 0 and index % 6 == 0) {
+		  end = start + 6;
+	  }
+	  else end = index % 6 + start;
+  }
+  else end = start + 6;
+
+  if (last_page != currentPage) {
+	  Lcd.fillScreen(backgroundColor);
+	  last_page = currentPage;
+  }
+
+  //Update Pages
+  for (int i = start; i < end; i++) {
+	  int x0 = (i % 3) * BOX_WIDTH + (i % 3) + 5;
+	  int y0 = (i / 3)%2 * BOX_HEIGHT + (i / 3)%2 + 3;
+	  Lcd.setTextSize(2);
+	  Lcd.setCursor(x0, y0);
+	  if (n[i].mode == OUPT) {
+		  //read and print data from node
+		    Lcd.setTextColor(n[i].labelColorNotSelected);
+			Lcd.print(n[i].label);
+			Lcd.setCursor(x0, y0 + SIZE2PX + 5);
+			Lcd.setTextColor(n[i].subLabelColor);
+			Lcd.print(n[i].subLabel);
+			if (n[i].dout != n[i].last) {
+				//Do something with Icon here
+				Lcd.setCursor(x0, y0 + SIZE2PX * 3 + 10);
+				Lcd.setTextColor(backgroundColor);
+				Lcd.printf(" %.2f", n[i].last);
+				Lcd.setCursor(x0, y0 + SIZE2PX * 3 + 10);
+				Lcd.setTextColor(n[i].doutColor);
+				Lcd.setTextSize(2);
+				Lcd.printf(" %.2f", n[i].dout);
+				n[i].last = n[i].dout;
+			}
+	  }
+	  else {
+		  //check input and write data to node
+		  if (i == icheck) {
+				Lcd.setTextColor(n[i].labelColorSelected);
+		  }
+		  else {
+				Lcd.setTextColor(n[i].labelColorNotSelected);
+		  }
+		  Lcd.print(n[i].label);
+		  //Do something with Icon here
+		  if (n[i].data != (int)(n[i].last)) {
+			  Lcd.setCursor(x0, y0 + SIZE2PX + 5);
+			  Lcd.setTextColor(backgroundColor);
+			  Lcd.print((int)(n[i].last));
+			  n[i].last = n[i].data;
+		  }
+		  Lcd.setCursor(x0, y0 + SIZE2PX + 5);
+		  if (n[i].data == 0)
+			  Lcd.setTextColor(n[i].iconColorOff);
+		  else if (n[i].data == 1)
+			  Lcd.setTextColor(n[i].iconColorOn);
+		  Lcd.print(n[i].data);
+	  }
+  }
+
+  //Refresh Grid
+  Lcd.drawGridUi(icheck);
+}
+
+void UI::addNode(String Label, byte icon, byte mode) {
+	Label = Label.substring(0, 8);
+	n.PushBack(Node(Label, this->index++, icon, mode));
 }
 
 void UI::setBrightness(uint8_t brightness) {
@@ -126,14 +182,64 @@ void UI::setBrightness(uint8_t brightness) {
 }
 
 int UI::getData(int index){
-    return dataIn[index];
+    return n[index].data;
 }
 
-void UI::addNode(String Label,byte icon,byte mode){
-    n.PushBack(Node(Label,this->index++,icon,mode));
-    
+float UI::getDout(int index) {
+	return n[index].dout;
 }
 
-void UI::writeData(int index,int data){
-    
+String UI::getLabel(int index) {
+	return n[index].label;
+}
+
+String UI::getSubLabel(int index) {
+	return n[index].subLabel;
+}
+
+void UI::write(int index,float data){
+	if (n[index].mode == OUPT) {
+		n[index].dout = data;
+	}
+	else {
+		n[index].data = (int)data;
+	}
+
+}
+
+void UI::setLabel(int index, String label) {
+	label = label.substring(0, 8);
+	n[index].label = label;
+}
+
+void UI::setSubLabel(int index, String sub) {
+	sub = sub.substring(0, 8);
+	n[index].subLabel = sub;
+}
+
+void UI::setLabelColor(int index, uint16_t selected, uint16_t notSelected) {
+	n[index].labelColorSelected = selected;
+	n[index].labelColorNotSelected = notSelected;
+}
+
+void UI::setLabelColor(int index, uint16_t notSelected) {
+	n[index].labelColorNotSelected = notSelected;
+}
+
+void UI::setSubLabelColor(int index, uint16_t color) {
+	n[index].subLabelColor = color;
+}
+
+void UI::setIconColor(int index, uint16_t on, uint16_t off) {
+	n[index].iconColorOn = on;
+	n[index].iconColorOff = off;
+}
+
+void UI::setIconColor(int index, uint16_t color) {
+	n[index].iconColorOn = color;
+	n[index].iconColorOff = color;
+}
+
+void UI::setDoutColor(int index, uint16_t color) {
+	n[index].doutColor = color;
 }
