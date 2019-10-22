@@ -55,55 +55,11 @@ void UI::update(bool isConnected) {
 	  Lcd.fillRect(16, 224, 160, 16, backgroundColor);
 	  last_status = isConnected;
   }
-<<<<<<< HEAD
   Lcd.setTextSize(2);
   Lcd.setCursor(16, 224);
   if (isConnected) {
 	  Lcd.setTextColor(GREEN);
 	  Lcd.print("Connected");
-=======
-  
-  //Node
-  for(int i = 0;i<this->index;i++){
-    if( i % 6 < 3){
-      if(i == icheck){
-        Lcd.setTextColor(PINK);
-        if(n[i].data == 0)
-          Lcd.fillCircle(106*i+52,60,20,WHITE);
-        else if(n[i].data == 1)
-          Lcd.fillCircle(106*i+52,60,20,YELLOW);
-      }
-      else{
-        Lcd.setTextColor(WHITE);
-        if(n[i].data == 0)
-          Lcd.fillCircle(106*i+52,60,20,WHITE);
-        else if(n[i].data == 1)
-          Lcd.fillCircle(106*i+52,60,20,YELLOW);
-      }
-      Lcd.setCursor(106*i+5,8);
-      Lcd.print(n[i].label);
-    }
-    else{
-      if(i == icheck){
-        Lcd.setTextColor(PINK);
-        if(n[i].data == 0)
-          Lcd.fillCircle(106*(i-3)+52,170,20,WHITE);
-        else if(n[i].data == 1)
-          Lcd.fillCircle(106*(i-3)+52,170,20,YELLOW);
-      }
-      else{
-        Lcd.setTextColor(WHITE);
-        if(n[i].data == 0)
-          Lcd.fillCircle(106*(i-3)+52,170,20,WHITE);
-        else if(n[i].data == 1)
-          Lcd.fillCircle(106*(i-3)+52,170,20,YELLOW);
-      }
-      Lcd.setCursor(106*(i-3)+5,120);
-      
-      Lcd.print(n[i].label);
-    }
-    
->>>>>>> da232ec34754a9acbf5f0dc8ee5fb6e8a1dd6e3d
   }
   else {
 	  Lcd.setTextColor(RED);
@@ -119,7 +75,6 @@ void UI::update(bool isConnected) {
       n[icheck].data = 0;
     }
   }
-<<<<<<< HEAD
   else if(BtnA.wasPressed()){
 	  do{
 			if (this->icheck - 1 < 0) {
@@ -139,24 +94,6 @@ void UI::update(bool isConnected) {
 				this->icheck++;
 			}
 	  } while (n[this->icheck].mode == OUPT);
-=======
-  else if(BtnA.wasPressed() ){
-    if(icheck > 0)
-      this->icheck--;
-    else
-    {
-        this->icheck = this->index - 1;
-    }
-    
-  }
-  else if(BtnB.wasPressed()){
-    if(icheck < this->index-1)
-      this->icheck++;
-    else
-    {
-        this->icheck = 0;
-    }
->>>>>>> da232ec34754a9acbf5f0dc8ee5fb6e8a1dd6e3d
   }
 
   //Node
